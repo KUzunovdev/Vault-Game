@@ -1,5 +1,6 @@
 import { Sprite, Texture, Rectangle } from "pixi.js";
 import { InteractionEvent } from "@pixi/interaction";
+import { gsap } from 'gsap';
 
 export default class Handle extends Sprite {
   private handleShadow!: Sprite;
@@ -28,6 +29,9 @@ export default class Handle extends Sprite {
   private rotateHandle(clickX: number): void {
     const rotationDirection = clickX < window.innerWidth / 2 ? -1 : 1;
     const rotationAngle = 60 * (Math.PI / 180);
-    this.rotation += rotationDirection * rotationAngle;
+    gsap.to(this, {
+      rotation: this.rotation + rotationDirection * rotationAngle,
+      duration: 0.5,
+    });
   }
 }

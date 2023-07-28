@@ -31,11 +31,31 @@ export default class Game extends Scene {
     this.addChild(this.bg, this.vault);
   }
 
+  //generating vault code in format 1-9 clockwise/counterclockwise
+  generateCode(): Array<{
+    number: number;
+    direction: "clockwise" | "counterclockwise";
+  }> {
+    const code = [];
+    for (let i = 0; i < 3; i++) {
+      const direction = Math.random() < 0.5 ? "clockwise" : "counterclockwise";
+      const number = Math.floor(Math.random() * 9) + 1;
+      code.push({ number, direction } as {
+        number: number;
+        direction: "clockwise" | "counterclockwise";
+      });
+    }
+    return code;
+  }
+
   update(delta: number) {
     // Update game state
   }
 
   async start() {
     //implement logic for game state, generating vault code, reset game and etc
+
+    const code = this.generateCode();
+    console.log(code);
   }
 }
