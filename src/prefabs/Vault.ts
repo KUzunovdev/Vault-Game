@@ -5,11 +5,15 @@ export default class Vault extends Container {
   private door: Sprite;
   private handle: Handle;
 
-  constructor(doorTexture: Texture, handleTexture: Texture) {
+  constructor(
+    doorTexture: Texture,
+    handleTexture: Texture,
+    handleShadowTexture: Texture
+  ) {
     super();
 
     this.door = new Sprite(doorTexture);
-    this.handle = new Handle(handleTexture);
+    this.handle = new Handle(handleShadowTexture, handleTexture);
 
     this.door.anchor.set(0.5);
     this.handle.anchor.set(0.5);

@@ -19,7 +19,11 @@ export default class Game extends Scene {
     this.bg.x = window.innerWidth / 2;
     this.bg.y = window.innerHeight / 2;
 
-    this.vault = new Vault(assets["door"], assets["handle"]);
+    this.vault = new Vault(
+      assets["door"],
+      assets["handle"],
+      assets["handleShadow"]
+    );
     this.vault.scale.set(0.4);
     this.vault.x = window.innerWidth / 2 + 40;
     this.vault.y = window.innerHeight / 2 - 17;
