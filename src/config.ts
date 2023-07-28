@@ -1,23 +1,41 @@
-import type { BgConfig } from "./prefabs/ParallaxBackground";
-
 type Config = {
-  backgrounds: Record<string, BgConfig>;
+  assets: {
+    positions: {
+      vault: {
+        x: number;
+        y: number;
+      };
+      handle: {
+        x: number;
+        y: number;
+      };
+    };
+  };
+  rotation: {
+    step: number;
+  };
+  combination: {
+    length: number;
+  };
 };
 
 export default {
-  backgrounds: {
-    forest: {
-      layers: [
-        "sky",
-        "clouds_1",
-        "rocks",
-        "clouds_2",
-        "ground_1",
-        "ground_2",
-        "ground_3",
-        "plant",
-      ],
-      panSpeed: 0.2,
+  assets: {
+    positions: {
+      vault: {
+        x: 0.5,
+        y: 0.5,
+      },
+      handle: {
+        x: 0.5,
+        y: 0.5,
+      },
     },
+  },
+  rotation: {
+    step: 60,
+  },
+  combination: {
+    length: 3,
   },
 } as Config;
