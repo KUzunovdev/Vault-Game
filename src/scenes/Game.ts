@@ -14,19 +14,21 @@ export default class Game extends Scene {
     const assets = await this.utils.assetLoader.loadAssetsGroup("Game");
 
     this.bg = Sprite.from(assets["bg"]);
-    this.bg.scale.set(0.4);
+    this.bg.scale.set(0.3);
     this.bg.anchor.set(0.5);
     this.bg.x = window.innerWidth / 2;
     this.bg.y = window.innerHeight / 2;
 
     this.vault = new Vault(
       assets["door"],
+      assets["doorOpen"],
+      assets["doorOpenShadow"],
       assets["handle"],
       assets["handleShadow"]
     );
-    this.vault.scale.set(0.4);
-    this.vault.x = window.innerWidth / 2 + 40;
-    this.vault.y = window.innerHeight / 2 - 17;
+    this.vault.scale.set(0.3);
+    this.vault.x = window.innerWidth / 2 + 30;
+    this.vault.y = window.innerHeight / 2 - 10;
 
     this.addChild(this.bg, this.vault);
   }
