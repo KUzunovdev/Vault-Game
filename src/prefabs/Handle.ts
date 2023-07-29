@@ -14,6 +14,7 @@ export default class Handle extends Sprite {
     super(texture);
 
     this.handleShadow = new Sprite(handleShadowTexture);
+
     this.handleShadow.position.set(-350, -350);
     this.addChild(this.handleShadow);
 

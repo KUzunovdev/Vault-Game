@@ -24,7 +24,7 @@ export default class Game extends Scene {
     const assets = await this.utils.assetLoader.loadAssetsGroup("Game");
 
     this.bg = Sprite.from(assets["bg"]);
-    this.bg.scale.set(0.3);
+    this.bg.scale.set(0.4);
     this.bg.anchor.set(0.5);
     this.bg.x = window.innerWidth / 2;
     this.bg.y = window.innerHeight / 2;
@@ -37,11 +37,14 @@ export default class Game extends Scene {
       assets["handleShadow"],
       this.handleRotation.bind(this)
     );
-    this.vault.scale.set(0.3);
+    this.vault.scale.set(0.4);
     this.vault.x = window.innerWidth / 2 + 30;
     this.vault.y = window.innerHeight / 2 - 10;
 
     this.addChild(this.bg, this.vault);
+
+    window.addEventListener("resize", this.handleResize.bind(this));
+    this.handleResize();
   }
 
   //generating vault code in format 1-9 clockwise/counterclockwise
@@ -134,5 +137,20 @@ export default class Game extends Scene {
 
     this.generatedCode = this.generateCode();
     console.log(this.generatedCode);
+  }
+
+  private handleResize() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    this.onResize(width, height);
+  }
+
+  onResize(width: number, height: number) {
+    this.bg.x = width / 2;
+    this.bg.y = height / 2;
+
+    this.vault.x = width / 2 + 30;
+    this.vault.y = height / 2 - 10;
   }
 }
