@@ -1,12 +1,16 @@
 import { Sprite, Texture, Rectangle } from "pixi.js";
 import { InteractionEvent } from "@pixi/interaction";
-import { gsap } from 'gsap';
+import { gsap } from "gsap";
 
 export default class Handle extends Sprite {
   private handleShadow!: Sprite;
   private hitAreaSprite!: Sprite;
 
-  constructor(texture: Texture, handleShadowTexture: Texture) {
+  constructor(
+    texture: Texture,
+    handleShadowTexture: Texture,
+    private onRotate: (direction: "clockwise" | "counterclockwise") => void
+  ) {
     super(texture);
 
     this.handleShadow = new Sprite(handleShadowTexture);
@@ -33,5 +37,8 @@ export default class Handle extends Sprite {
       rotation: this.rotation + rotationDirection * rotationAngle,
       duration: 0.5,
     });
+    const direction =
+      rotationDirection === 1 ? "clockwise" : "counterclockwise";
+    this.onRotate(direction); // Calling the callback with the direction
   }
 }

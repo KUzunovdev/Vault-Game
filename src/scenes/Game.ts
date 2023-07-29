@@ -9,6 +9,16 @@ export default class Game extends Scene {
 
   private bg!: Sprite;
   private vault!: Vault;
+  private currentDirection: "clockwise" | "counterclockwise" | null = null;
+  private currentCount = 0;
+  private rotations: {
+    number: number;
+    direction: "clockwise" | "counterclockwise";
+  }[] = [];
+  private generatedCode!: Array<{
+    number: number;
+    direction: "clockwise" | "counterclockwise";
+  }>;
 
   async load() {
     const assets = await this.utils.assetLoader.loadAssetsGroup("Game");
@@ -24,7 +34,8 @@ export default class Game extends Scene {
       assets["doorOpen"],
       assets["doorOpenShadow"],
       assets["handle"],
-      assets["handleShadow"]
+      assets["handleShadow"],
+      this.handleRotation.bind(this)
     );
     this.vault.scale.set(0.3);
     this.vault.x = window.innerWidth / 2 + 30;
@@ -50,6 +61,70 @@ export default class Game extends Scene {
     return code;
   }
 
+  private rotationTimeout: any;
+
+  handleRotation(direction: "clockwise" | "counterclockwise"): void {
+    clearTimeout(this.rotationTimeout);
+
+    if (this.currentDirection === direction) {
+      this.currentCount++;
+    } else {
+      if (this.currentDirection && this.currentCount > 0) {
+        this.rotations.push({
+          number: this.currentCount,
+          direction: this.currentDirection,
+        });
+      }
+      this.currentDirection = direction;
+      this.currentCount = 1;
+    }
+
+    this.rotationTimeout = setTimeout(() => {
+      if (this.currentDirection && this.currentCount > 0) {
+        this.rotations.push({
+          number: this.currentCount,
+          direction: this.currentDirection,
+        });
+        this.currentCount = 0;
+        this.currentDirection = null;
+
+        if (this.rotations.length === 3) {
+          this.checkCode();
+        }
+      }
+    }, 5000);
+
+    console.log("Current count:", this.currentCount); //test if the logic for registering player activity works
+    console.log("Current rotations array:", this.rotations);
+
+    if (this.currentCount === 9) {
+      // Reset count after a full rotation
+      this.currentCount = 0;
+      this.rotations.push({ number: 9, direction: this.currentDirection });
+      this.currentDirection = null;
+    }
+  }
+
+  private checkCode() {
+    const isMatch =
+      JSON.stringify(this.rotations) === JSON.stringify(this.generatedCode);
+
+    if (isMatch) {
+      console.log("Correct code entered!");
+      // opening the vault, etc.
+    } else {
+      console.log("Incorrect code. Try again!");
+      this.resetGame(); //reset the game state
+    }
+  }
+
+  private resetGame() {
+    this.currentDirection = null;
+    this.currentCount = 0;
+    this.rotations = [];
+    // Any other necessary reset logic
+  }
+
   update(delta: number) {
     // Update game state
   }
@@ -57,7 +132,7 @@ export default class Game extends Scene {
   async start() {
     //implement logic for game state, generating vault code, reset game and etc
 
-    const code = this.generateCode();
-    console.log(code);
+    this.generatedCode = this.generateCode();
+    console.log(this.generatedCode);
   }
 }

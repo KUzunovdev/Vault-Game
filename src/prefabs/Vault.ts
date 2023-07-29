@@ -12,14 +12,15 @@ export default class Vault extends Container {
     doorOpenTexture: Texture,
     doorOpenShadowTexture: Texture,
     handleTexture: Texture,
-    handleShadowTexture: Texture
+    handleShadowTexture: Texture,
+    onRotate: (direction: "clockwise" | "counterclockwise") => void
   ) {
     super();
 
     this.door = new Sprite(doorTexture);
     this.doorOpen = new Sprite(doorOpenTexture);
     this.doorOpenShadow = new Sprite(doorOpenShadowTexture);
-    this.handle = new Handle(handleShadowTexture, handleTexture);
+    this.handle = new Handle(handleShadowTexture, handleTexture, onRotate);
 
     this.door.anchor.set(0.5);
     this.doorOpen.anchor.set(0.5);
@@ -27,7 +28,6 @@ export default class Vault extends Container {
     this.handle.anchor.set(0.5);
 
     this.handle.position.set(-80, 0);
-
     this.doorOpen.position.set(1358, 20);
     this.doorOpenShadow.position.set(1430, 70);
 
