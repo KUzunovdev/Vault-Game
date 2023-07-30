@@ -1,8 +1,6 @@
 import { Sprite, Text } from "pixi.js";
 import Scene from "../core/Scene";
-// import Handle from "../prefabs/Handle";
 import Vault from "../prefabs/Vault";
-// import config from "../config";
 import { gsap } from "gsap";
 
 export default class Game extends Scene {
@@ -145,11 +143,10 @@ export default class Game extends Scene {
       }
     }, 5000);
 
-    console.log("Current count:", this.currentCount); //test if the logic for registering player activity works
-    console.log("Current rotations array:", this.rotations);
+    // console.log("Current count:", this.currentCount);
+    // console.log("Current rotations array:", this.rotations);
 
     if (this.currentCount === 9) {
-      // Reset count after a full rotation
       this.currentCount = 0;
       this.rotations.push({ number: 9, direction: this.currentDirection });
       if (this.rotations.length === 3) {
@@ -188,7 +185,6 @@ export default class Game extends Scene {
       JSON.stringify(this.rotations) === JSON.stringify(this.generatedCode);
 
     if (isMatch) {
-      console.log("Correct code entered!");
       console.log("Time took to open " + (Math.floor(this.timer) + "s"));
       this.vault.openVault();
       this.startGlitter();
@@ -198,7 +194,7 @@ export default class Game extends Scene {
         this.resetGame();
       }, 5000);
     } else {
-      console.log("Incorrect code. Try again!");
+      // console.log("Incorrect code. Try again!");
       this.stopGlitter();
       this.resetGame();
     }
@@ -216,6 +212,7 @@ export default class Game extends Scene {
     this.vault.handle.reLock();
   }
 
+  //timer
   private timer = 0;
   private milliseconds = 0;
 

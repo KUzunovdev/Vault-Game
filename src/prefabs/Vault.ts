@@ -35,8 +35,6 @@ export default class Vault extends Container {
     this.doorOpenShadow.visible = false;
 
     this.addChild(this.door, this.doorOpenShadow, this.doorOpen, this.handle);
-
-    //open , close stages + animation
   }
 
   openVault(): void {
