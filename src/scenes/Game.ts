@@ -130,6 +130,9 @@ export default class Game extends Scene {
       }
     }, 5000);
 
+    console.log("Current count:", this.currentCount); //test if the logic for registering player activity works
+    console.log("Current rotations array:", this.rotations);
+
     if (this.currentCount === 9) {
       // Reset count after a full rotation
       this.currentCount = 0;
@@ -170,6 +173,11 @@ export default class Game extends Scene {
       console.log("Correct code entered!");
       this.vault.openVault();
       this.startGlitter();
+      setTimeout(() => {
+        this.stopGlitter();
+        this.vault.closeVault();
+        this.resetGame();
+      }, 5000);
     } else {
       console.log("Incorrect code. Try again!");
       this.stopGlitter();
@@ -178,10 +186,13 @@ export default class Game extends Scene {
   }
 
   private resetGame() {
+    this.generatedCode = this.generateCode();
+    console.log(this.generatedCode);
+
     this.currentDirection = null;
     this.currentCount = 0;
     this.rotations = [];
-    // Any other necessary reset logic
+    this.vault.handle.reLock();
   }
 
   update(delta: number) {
@@ -189,13 +200,10 @@ export default class Game extends Scene {
   }
 
   async start() {
-    //implement logic for game state, generating vault code, reset game and etc
+    //implement logic for game state, reset game and etc
 
     this.generatedCode = this.generateCode();
     console.log(this.generatedCode);
-
-    this.vault.openVault();
-    this.startGlitter();
   }
 
   //screen resize logic

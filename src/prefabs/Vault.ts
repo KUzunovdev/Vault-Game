@@ -5,7 +5,7 @@ export default class Vault extends Container {
   private door: Sprite;
   private doorOpen: Sprite;
   private doorOpenShadow: Sprite;
-  private handle: Handle;
+  public handle: Handle;
 
   constructor(
     doorTexture: Texture,

@@ -42,4 +42,12 @@ export default class Handle extends Sprite {
       rotationDirection === 1 ? "clockwise" : "counterclockwise";
     this.onRotate(direction); // Calling the callback with the direction
   }
+
+  public reLock(): void {
+    gsap.to(this, {
+      rotation: this.rotation + 360 * 3 * (Math.PI / 180),
+      duration: 2,
+      ease: "power1.inOut",
+    });
+  }
 }
