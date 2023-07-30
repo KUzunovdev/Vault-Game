@@ -1,9 +1,8 @@
-import { BLEND_MODES, Sprite } from "pixi.js";
+import { Sprite, Text } from "pixi.js";
 import Scene from "../core/Scene";
-import Handle from "../prefabs/Handle";
+// import Handle from "../prefabs/Handle";
 import Vault from "../prefabs/Vault";
-import config from "../config";
-import { Spine } from "pixi-spine";
+// import config from "../config";
 import { gsap } from "gsap";
 
 export default class Game extends Scene {
@@ -14,6 +13,7 @@ export default class Game extends Scene {
   private blink2!: Sprite;
   private blink3!: Sprite;
   private vault!: Vault;
+  private timerText!: Text;
   private glitterAnimations: gsap.core.Tween[] = [];
   private currentDirection: "clockwise" | "counterclockwise" | null = null;
   private currentCount = 0;
@@ -47,6 +47,14 @@ export default class Game extends Scene {
     this.vault.x = window.innerWidth / 2 + 30;
     this.vault.y = window.innerHeight / 2 - 10;
 
+    //timer
+    this.timerText = new Text("Time: 0", {
+      fontSize: 14,
+      fill: 0xffffff,
+    });
+    this.timerText.x = this.vault.x - 535;
+    this.timerText.y = this.vault.y - 58;
+
     //generate blink sprites
     this.blink1 = Sprite.from(assets["blink"]);
     this.blink2 = Sprite.from(assets["blink"]);
@@ -72,7 +80,14 @@ export default class Game extends Scene {
 
     this.blink1.visible = false;
 
-    this.addChild(this.bg, this.blink1, this.blink2, this.blink3, this.vault);
+    this.addChild(
+      this.bg,
+      this.timerText,
+      this.blink1,
+      this.blink2,
+      this.blink3,
+      this.vault
+    );
 
     window.addEventListener("resize", this.handleResize.bind(this));
     this.handleResize();
@@ -137,6 +152,9 @@ export default class Game extends Scene {
       // Reset count after a full rotation
       this.currentCount = 0;
       this.rotations.push({ number: 9, direction: this.currentDirection });
+      if (this.rotations.length === 3) {
+        this.checkCode();
+      }
       this.currentDirection = null;
     }
   }
@@ -171,6 +189,7 @@ export default class Game extends Scene {
 
     if (isMatch) {
       console.log("Correct code entered!");
+      console.log("Time took to open " + (Math.floor(this.timer) + "s"));
       this.vault.openVault();
       this.startGlitter();
       setTimeout(() => {
@@ -181,11 +200,13 @@ export default class Game extends Scene {
     } else {
       console.log("Incorrect code. Try again!");
       this.stopGlitter();
-      this.resetGame(); //reset the game state
+      this.resetGame();
     }
   }
 
   private resetGame() {
+    this.timer = 0;
+    this.updateTimerDisplay();
     this.generatedCode = this.generateCode();
     console.log(this.generatedCode);
 
@@ -195,13 +216,25 @@ export default class Game extends Scene {
     this.vault.handle.reLock();
   }
 
+  private timer = 0;
+  private milliseconds = 0;
+
   update(delta: number) {
-    // Update game state
+    if (this.timer >= 0) {
+      this.milliseconds += delta;
+      if (this.milliseconds >= 1000) {
+        this.timer += 1;
+        this.milliseconds -= 1000;
+        this.updateTimerDisplay();
+      }
+    }
+  }
+
+  private updateTimerDisplay() {
+    this.timerText.text = "Time: " + Math.floor(this.timer) + "s";
   }
 
   async start() {
-    //implement logic for game state, reset game and etc
-
     this.generatedCode = this.generateCode();
     console.log(this.generatedCode);
   }
@@ -229,5 +262,8 @@ export default class Game extends Scene {
 
     this.blink3.x = this.vault.x + 35;
     this.blink3.y = this.vault.y + 140;
+
+    this.timerText.x = this.vault.x - 535;
+    this.timerText.y = this.vault.y - 58;
   }
 }
