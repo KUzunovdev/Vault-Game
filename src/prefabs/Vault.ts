@@ -44,8 +44,6 @@ export default class Vault extends Container {
     this.handle.visible = false;
     this.doorOpen.visible = true;
     this.doorOpenShadow.visible = true;
-
-    gsap.to(this.doorOpen, { x: "+=200", duration: 1 });
   }
 
   closeVault(): void {
