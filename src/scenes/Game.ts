@@ -2,6 +2,7 @@ import { Sprite, Text } from "pixi.js";
 import Scene from "../core/Scene";
 import Vault from "../prefabs/Vault";
 import { gsap } from "gsap";
+import config from "../config";
 
 export default class Game extends Scene {
   name = "Game";
@@ -28,8 +29,8 @@ export default class Game extends Scene {
     this.bg.x = width / 2;
     this.bg.y = height / 2;
 
-    this.vault.x = width / 2 + 30;
-    this.vault.y = height / 2 - 10;
+    this.vault.x = width / 2 + config.assets.positions.vault.x;
+    this.vault.y = height / 2 - config.assets.positions.vault.y;
 
     this.blink1.x = width / 2 - 20;
     this.blink1.y = height / 2;
@@ -104,7 +105,7 @@ export default class Game extends Scene {
     direction: "clockwise" | "counterclockwise";
   }> {
     const code = [];
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < config.combination.length; i++) {
       const direction = Math.random() < 0.5 ? "clockwise" : "counterclockwise";
       const number = Math.floor(Math.random() * 9) + 1;
       code.push({ number, direction } as {
@@ -136,10 +137,13 @@ export default class Game extends Scene {
     console.log("Current count:", this.currentCount);
     console.log("Current rotations array:", this.rotations);
 
-    if (this.currentCount === 9) {
+    if (this.currentCount === config.rotation.step) {
       this.currentCount = 0;
-      this.rotations.push({ number: 9, direction: this.currentDirection });
-      if (this.rotations.length === 3) {
+      this.rotations.push({
+        number: config.rotation.step,
+        direction: this.currentDirection,
+      });
+      if (this.rotations.length === config.combination.length) {
         this.checkCode();
       }
       this.currentDirection = null;
@@ -229,7 +233,7 @@ export default class Game extends Scene {
           this.currentCount = 0;
           this.currentDirection = null;
 
-          if (this.rotations.length === 3) {
+          if (this.rotations.length === config.combination.length) {
             this.checkCode();
           }
         }

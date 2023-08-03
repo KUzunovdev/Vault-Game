@@ -23,8 +23,8 @@ export default {
   assets: {
     positions: {
       vault: {
-        x: 0.5,
-        y: 0.5,
+        x: 30,
+        y: 10,
       },
       handle: {
         x: 0.5,
@@ -33,7 +33,7 @@ export default {
     },
   },
   rotation: {
-    step: 60,
+    step: 9,
   },
   combination: {
     length: 3,
