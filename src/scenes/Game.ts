@@ -24,14 +24,31 @@ export default class Game extends Scene {
     direction: "clockwise" | "counterclockwise";
   }>;
 
+  private positionElements(width: number, height: number) {
+    this.bg.x = width / 2;
+    this.bg.y = height / 2;
+
+    this.vault.x = width / 2 + 30;
+    this.vault.y = height / 2 - 10;
+
+    this.blink1.x = width / 2 - 20;
+    this.blink1.y = height / 2;
+    this.blink2.x = this.vault.x - 240;
+    this.blink2.y = this.vault.y - 10;
+
+    this.blink3.x = this.vault.x + 35;
+    this.blink3.y = this.vault.y + 140;
+
+    this.timerText.x = this.vault.x - 535;
+    this.timerText.y = this.vault.y - 58;
+  }
+
   async load() {
     const assets = await this.utils.assetLoader.loadAssetsGroup("Game");
 
     this.bg = Sprite.from(assets["bg"]);
     this.bg.scale.set(0.4);
     this.bg.anchor.set(0.5);
-    this.bg.x = window.innerWidth / 2;
-    this.bg.y = window.innerHeight / 2;
 
     this.vault = new Vault(
       assets["door"],
@@ -42,16 +59,12 @@ export default class Game extends Scene {
       this.handleRotation.bind(this)
     );
     this.vault.scale.set(0.4);
-    this.vault.x = window.innerWidth / 2 + 30;
-    this.vault.y = window.innerHeight / 2 - 10;
 
     //timer
     this.timerText = new Text("Time: 0", {
       fontSize: 14,
       fill: 0xffffff,
     });
-    this.timerText.x = this.vault.x - 535;
-    this.timerText.y = this.vault.y - 58;
 
     //generate blink sprites
     this.blink1 = Sprite.from(assets["blink"]);
@@ -66,16 +79,6 @@ export default class Game extends Scene {
     this.blink2.scale.set(0.3);
     this.blink3.scale.set(0.3);
 
-    this.blink1.x = window.innerWidth / 2 - 20;
-    this.blink1.y = window.innerHeight / 2;
-    // this.blink1.blendMode = BLEND_MODES.ADD;
-
-    this.blink2.x = this.vault.x - 240;
-    this.blink2.y = this.vault.y - 10;
-
-    this.blink3.x = this.vault.x + 35;
-    this.blink3.y = this.vault.y + 140;
-
     this.blink1.visible = false;
 
     this.addChild(
@@ -87,8 +90,12 @@ export default class Game extends Scene {
       this.vault
     );
 
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    this.positionElements(width, height);
+
     window.addEventListener("resize", this.handleResize.bind(this));
-    this.handleResize();
   }
 
   //generating vault code in format 1-9 clockwise/counterclockwise
@@ -108,13 +115,11 @@ export default class Game extends Scene {
     return code;
   }
 
-  private rotationTimeout: any;
-
   //register player code
 
-  handleRotation(direction: "clockwise" | "counterclockwise"): void {
-    clearTimeout(this.rotationTimeout);
+  private rotationElapsedTime = 0;
 
+  handleRotation(direction: "clockwise" | "counterclockwise"): void {
     if (this.currentDirection === direction) {
       this.currentCount++;
     } else {
@@ -128,23 +133,8 @@ export default class Game extends Scene {
       this.currentCount = 1;
     }
 
-    this.rotationTimeout = setTimeout(() => {
-      if (this.currentDirection && this.currentCount > 0) {
-        this.rotations.push({
-          number: this.currentCount,
-          direction: this.currentDirection,
-        });
-        this.currentCount = 0;
-        this.currentDirection = null;
-
-        if (this.rotations.length === 3) {
-          this.checkCode();
-        }
-      }
-    }, 5000);
-
-    // console.log("Current count:", this.currentCount);
-    // console.log("Current rotations array:", this.rotations);
+    console.log("Current count:", this.currentCount);
+    console.log("Current rotations array:", this.rotations);
 
     if (this.currentCount === 9) {
       this.currentCount = 0;
@@ -155,7 +145,6 @@ export default class Game extends Scene {
       this.currentDirection = null;
     }
   }
-
   //glitter animation
 
   private startGlitter() {
@@ -180,7 +169,11 @@ export default class Game extends Scene {
     this.glitterAnimations = [];
   }
 
-  private checkCode() {
+  private delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  private async checkCode() {
     const isMatch =
       JSON.stringify(this.rotations) === JSON.stringify(this.generatedCode);
 
@@ -188,11 +181,10 @@ export default class Game extends Scene {
       console.log("Time took to open " + (Math.floor(this.timer) + "s"));
       this.vault.openVault();
       this.startGlitter();
-      setTimeout(() => {
-        this.stopGlitter();
-        this.vault.closeVault();
-        this.resetGame();
-      }, 5000);
+      await this.delay(5000);
+      this.stopGlitter();
+      this.vault.closeVault();
+      this.resetGame();
     } else {
       // console.log("Incorrect code. Try again!");
       this.stopGlitter();
@@ -225,6 +217,25 @@ export default class Game extends Scene {
         this.updateTimerDisplay();
       }
     }
+    // Handle rotation timeout logic
+    if (this.currentDirection) {
+      this.rotationElapsedTime += delta;
+      if (this.rotationElapsedTime >= 3000) {
+        if (this.currentDirection && this.currentCount > 0) {
+          this.rotations.push({
+            number: this.currentCount,
+            direction: this.currentDirection,
+          });
+          this.currentCount = 0;
+          this.currentDirection = null;
+
+          if (this.rotations.length === 3) {
+            this.checkCode();
+          }
+        }
+        this.rotationElapsedTime = 0;
+      }
+    }
   }
 
   private updateTimerDisplay() {
@@ -242,25 +253,6 @@ export default class Game extends Scene {
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    this.onResize(width, height);
-  }
-
-  onResize(width: number, height: number) {
-    this.bg.x = width / 2;
-    this.bg.y = height / 2;
-
-    this.vault.x = width / 2 + 30;
-    this.vault.y = height / 2 - 10;
-
-    this.blink1.x = window.innerWidth / 2 - 20;
-    this.blink1.y = window.innerHeight / 2;
-    this.blink2.x = this.vault.x - 240;
-    this.blink2.y = this.vault.y - 10;
-
-    this.blink3.x = this.vault.x + 35;
-    this.blink3.y = this.vault.y + 140;
-
-    this.timerText.x = this.vault.x - 535;
-    this.timerText.y = this.vault.y - 58;
+    this.positionElements(width, height);
   }
 }
