@@ -14,6 +14,7 @@ export default class Game extends Scene {
   private vault!: Vault;
   private timerText!: Text;
   private glitterAnimations: gsap.core.Tween[] = [];
+  private blinkSprites: Sprite[] = [];
   private currentDirection: "clockwise" | "counterclockwise" | null = null;
   private currentCount = 0;
   private rotations: {
@@ -32,13 +33,12 @@ export default class Game extends Scene {
     this.vault.x = width / 2 + config.assets.positions.vault.x;
     this.vault.y = height / 2 - config.assets.positions.vault.y;
 
-    this.blink1.x = width / 2 - 20;
-    this.blink1.y = height / 2;
-    this.blink2.x = this.vault.x - 240;
-    this.blink2.y = this.vault.y - 10;
-
-    this.blink3.x = this.vault.x + 35;
-    this.blink3.y = this.vault.y + 140;
+    this.blinkSprites[0].x = width / 2 - 20;
+    this.blinkSprites[0].y = height / 2;
+    this.blinkSprites[1].x = this.vault.x - 240;
+    this.blinkSprites[1].y = this.vault.y - 10;
+    this.blinkSprites[2].x = this.vault.x + 35;
+    this.blinkSprites[2].y = this.vault.y + 140;
 
     this.timerText.x = this.vault.x - 535;
     this.timerText.y = this.vault.y - 58;
@@ -67,29 +67,20 @@ export default class Game extends Scene {
       fill: 0xffffff,
     });
 
-    //generate blink sprites
-    this.blink1 = Sprite.from(assets["blink"]);
-    this.blink2 = Sprite.from(assets["blink"]);
-    this.blink3 = Sprite.from(assets["blink"]);
+    // Generate blink sprites
+    for (let i = 0; i < 3; i++) {
+      const blink = Sprite.from(assets["blink"]);
+      blink.anchor.set(0.5);
+      blink.scale.set(0.3);
+      blink.visible = false;
+      this.blinkSprites.push(blink);
+    }
 
-    this.blink1.anchor.set(0.5);
-    this.blink2.anchor.set(0.5);
-    this.blink3.anchor.set(0.5);
+    this.addChild(this.bg, this.timerText, this.vault);
 
-    this.blink1.scale.set(0.3);
-    this.blink2.scale.set(0.3);
-    this.blink3.scale.set(0.3);
-
-    this.blink1.visible = false;
-
-    this.addChild(
-      this.bg,
-      this.timerText,
-      this.blink1,
-      this.blink2,
-      this.blink3,
-      this.vault
-    );
+    this.blinkSprites.forEach((blink) => {
+      this.addChild(blink);
+    });
 
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -152,7 +143,7 @@ export default class Game extends Scene {
   //glitter animation
 
   private startGlitter() {
-    [this.blink1, this.blink2, this.blink3].forEach((blink) => {
+    this.blinkSprites.forEach((blink) => {
       blink.visible = true;
 
       const animation = gsap.to(blink, {
@@ -167,9 +158,9 @@ export default class Game extends Scene {
 
   private stopGlitter() {
     this.glitterAnimations.forEach((animation) => animation.kill());
-    this.blink1.visible = false;
-    this.blink2.visible = false;
-    this.blink3.visible = false;
+    this.blinkSprites.forEach((blink) => {
+      blink.visible = false;
+    });
     this.glitterAnimations = [];
   }
 
