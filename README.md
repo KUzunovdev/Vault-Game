@@ -1,41 +1,50 @@
-## 🎮 Simple 2D Game Framework for [PixiJS](https://pixijs.com) using [Vite⚡](https://vitejs.dev/)
+# Vault Game 🔒
 
-<a href="https://pixi-framework.up.railway.app/" target="_blank">Demo</a>
+## Description
+Vault Game is an engaging puzzle game where players try to unlock a vault by cracking the code. 🧩 Players must rotate the handle in specific directions to match a randomly generated code, all while racing against the clock. ⏰ Can you open the vault in time?
 
-### Highlights 🌟
+## Features
+- Immersive gameplay with handle rotation mechanics. 🎮
+- Randomly generated codes for endless replayability. 🔀
+- Timer to track how long it takes to unlock the vault. ⌛
+- Glittering visual effects to celebrate success. ✨
 
-- Typescript
-- <a href="https://c.tenor.com/Hw0aKasI6B4AAAAC/fast-blazing-fast.gif" target="_blank">Blazing fast</a> builds and HMR through Vite
-- Scene management
-- Automagic asset loading per scene (sounds, spritesheets, textures, spine)
-- Keyboard input handling
-- Spine!
+## Installation 📥
+Make sure you have Node.js and npm installed. Then follow these steps to install the game:
 
-## Usage 🛠️
+1. Clone the repository:
 
-1. Clone repository `npx degit https://github.com/Hafaux/pixi-framework.git new-folder`
+   ```bash
+   git clone https://github.com/your-username/vault-game.git
+2. Navigate to the project directory:
 
-2. Navigate to the new directory and install the project dependencies using `npm install`
+   ```bash
+   cd vault-game
+3. Install the dependencies:
+   ```bash
+   npm install
+## Running the Game 🏃‍♂️
+To run the game in development mode, execute the following command:
+   
+   `npm install`
 
-### Spine
+The game will be accessible at `http://localhost:PORT`, where `PORT` is the port number used by your development server.
 
-Place your exported spine animations in the `public/<scene>/spine` folder. The framework will automatically load them when you create the scene.
+## Building the Game 🏗️
+To build the game for production, run the following command:
 
-```typescript
-...
-const anim = new SpineAnimation("spine-name");
+`npm run build`
 
-parent.addChild(anim);
+The built files will be located in the `build` or `dist` directory, depending on your project configuration.
 
-await anim.play("anim-name");
-...
+## Contributing 🤝
+Feel free to contribute to the project by submitting pull requests or reporting issues.
 
-```
+## License 📄
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-### Commands 💻
 
-| Command           | Description                                                          |
-| ----------------- | -------------------------------------------------------------------- |
-| `npm run start`   | Run dev server                                                       |
-| `npm run build`   | Build project for production                                         |
-| `npm run preview` | Preview production build (must run `build` before running `preview`) |
+---
+
+Enjoy the game, and good luck cracking the vault! 🔓
+
