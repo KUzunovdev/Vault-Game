@@ -14,8 +14,9 @@ export default class Handle extends Sprite {
     super(texture);
 
     this.handleShadow = new Sprite(handleShadowTexture);
+    this.handleShadow.anchor.set(0.5);
 
-    this.handleShadow.position.set(-350, -350);
+    this.handleShadow.position.set(0, 0);
     this.addChild(this.handleShadow);
 
     //hit area sprite
@@ -34,7 +35,7 @@ export default class Handle extends Sprite {
   private rotateHandle(clickX: number): void {
     const rotationDirection = clickX < window.innerWidth / 2 ? -1 : 1;
     const rotationAngle = 60 * (Math.PI / 180);
-    gsap.to(this, {
+    gsap.to([this, this.handleShadow], {
       rotation: this.rotation + rotationDirection * rotationAngle,
       duration: 0.5,
     });
@@ -44,7 +45,7 @@ export default class Handle extends Sprite {
   }
 
   public reLock(): void {
-    gsap.to(this, {
+    gsap.to([this, this.handleShadow], {
       rotation: this.rotation + 360 * 3 * (Math.PI / 180),
       duration: 2,
       ease: "power1.inOut",

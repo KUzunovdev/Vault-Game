@@ -1,5 +1,6 @@
 import { Container, Sprite, Texture } from "pixi.js";
 import Handle from "./Handle";
+import { gsap } from "gsap";
 
 export default class Vault extends Container {
   private door: Sprite;
@@ -34,20 +35,61 @@ export default class Vault extends Container {
     this.doorOpen.visible = false;
     this.doorOpenShadow.visible = false;
 
+    this.door.alpha = 1;
+    this.handle.alpha = 1;
+    this.doorOpen.alpha = 0;
+    this.doorOpenShadow.alpha = 0;
+
     this.addChild(this.door, this.doorOpenShadow, this.doorOpen, this.handle);
   }
 
   openVault(): void {
-    this.door.visible = false;
-    this.handle.visible = false;
-    this.doorOpen.visible = true;
-    this.doorOpenShadow.visible = true;
+    gsap.to(this.door, {
+      alpha: 0,
+      duration: 0.5,
+      onComplete: () => {
+        this.door.visible = false;
+      },
+    });
+    gsap.to(this.handle, {
+      alpha: 0,
+      duration: 0.5,
+      onComplete: () => {
+        this.handle.visible = false;
+      },
+    });
+    gsap.to([this.doorOpen, this.doorOpenShadow], {
+      alpha: 1,
+      duration: 0.5,
+      onStart: () => {
+        this.doorOpen.visible = true;
+        this.doorOpenShadow.visible = true;
+      },
+    });
   }
 
   closeVault(): void {
-    this.door.visible = true;
-    this.handle.visible = true;
-    this.doorOpen.visible = false;
-    this.doorOpenShadow.visible = false;
+    gsap.to(this.door, {
+      alpha: 1,
+      duration: 0.5,
+      onStart: () => {
+        this.door.visible = true;
+      },
+    });
+    gsap.to(this.handle, {
+      alpha: 1,
+      duration: 0.5,
+      onStart: () => {
+        this.handle.visible = true;
+      },
+    });
+    gsap.to([this.doorOpen, this.doorOpenShadow], {
+      alpha: 0,
+      duration: 0.5,
+      onComplete: () => {
+        this.doorOpen.visible = false;
+        this.doorOpenShadow.visible = false;
+      },
+    });
   }
 }

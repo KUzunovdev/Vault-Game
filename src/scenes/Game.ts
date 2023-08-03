@@ -224,7 +224,7 @@ export default class Game extends Scene {
     // Handle rotation timeout logic
     if (this.currentDirection) {
       this.rotationElapsedTime += delta;
-      if (this.rotationElapsedTime >= 3000) {
+      if (this.rotationElapsedTime >= config.rotation.delay) {
         if (this.currentDirection && this.currentCount > 0) {
           this.rotations.push({
             number: this.currentCount,

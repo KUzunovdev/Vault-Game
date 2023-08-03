@@ -13,6 +13,7 @@ type Config = {
   };
   rotation: {
     step: number;
+    delay: number;
   };
   combination: {
     length: number;
@@ -34,6 +35,7 @@ export default {
   },
   rotation: {
     step: 9,
+    delay: 3000,
   },
   combination: {
     length: 3,
